@@ -1,0 +1,6 @@
+# Coverage floor, applied when pytest runs with --cov=gps_journey.
+# Coverage reads this file instead of pyproject.toml when both exist, so put
+# any [tool.coverage.*] setting here.
+
+[report]
+fail_under = 43

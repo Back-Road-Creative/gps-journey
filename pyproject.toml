@@ -1,0 +1,120 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gps-journey"
+version = "0.2.0"
+description = "GPS journey processing: GPX parsing, geocoding, photo integration, and Hugo content generation"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Multimedia :: Graphics",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "gpxpy>=1.6.2",           # GPX file parsing
+    "geopy>=2.4.1",           # Geocoding (Nominatim, Google, etc.)
+    "httpx>=0.27.0",          # Async HTTP client
+    "pydantic>=2.0.0",        # Data validation
+    "pydantic-settings>=2.14.2",  # Config management (floor clears GHSA-4xgf-cpjx-pc3j)
+    "pyyaml>=6.0.0",          # YAML config files
+    "typer>=0.12.0",          # CLI framework
+    "rich>=13.7.0",           # Terminal formatting
+    "folium>=0.15.0",         # Interactive maps
+    "pillow>=10.0.0",         # EXIF extraction
+    "google-api-python-client>=2.0.0",  # Google Photos API
+    "google-auth-oauthlib>=1.0.0",      # OAuth 2.0
+    "google-auth-httplib2>=0.2.0",      # Auth HTTP transport
+    "filelock>=3.9.0",        # File locking for cache
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "hypothesis>=6.100",
+    "ruff>=0.4.0",
+    "mypy>=1.0.0",
+    "types-pyyaml",
+    "types-pillow",
+]
+
+[project.scripts]
+gps-journey = "gps_journey.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["gps_journey"]
+
+[tool.hatch.build.targets.editable]
+method = "path"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["."]
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "*.egg-info",
+    "examples/output",
+    "tests/fixtures",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "F",      # Pyflakes
+    "W",      # pycodestyle warnings
+    "I",      # isort
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "SIM",    # flake8-simplify
+    "RUF",    # Ruff-specific rules
+]
+ignore = [
+    "E501",   # Line too long (handled by formatter)
+]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["gps_journey"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S101", "F401"]
+# try-except-pass in EXIF parsing is intentional (malformed GPS data)
+"gps_journey/photos/filesystem_loader.py" = ["S110"]
+"scripts/*.py" = ["S101", "S311", "E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--cov=gps_journey",
+]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+check_untyped_defs = true
+exclude = ["tests/", "scripts/", "examples/"]
+
+[[tool.mypy.overrides]]
+module = ["scripts.*", "tests.*", "examples.*", "gps_journey.*"]
+ignore_errors = true

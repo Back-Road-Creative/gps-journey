@@ -1,0 +1,18 @@
+# Ratchet: rule families this project already passes at zero findings.
+#
+# `extend = "pyproject.toml"` inherits the base config (select E F W I UP B
+# SIM RUF, target-version, line-length, excludes, per-file-ignores, etc.);
+# `extend-select` below adds families on TOP of that base. A family may be
+# added here ONLY once `ruff check . --extend-select <FAMILY> --no-cache`
+# reports zero findings for it: this is a one-way ratchet against
+# regression, never a place to silence current findings.
+#
+# Currently clean: TD (flake8-todos). Other families join individually, once
+# each reports zero findings.
+
+extend = "pyproject.toml"
+
+[lint]
+extend-select = [
+    "TD",     # flake8-todos: no findings
+]
