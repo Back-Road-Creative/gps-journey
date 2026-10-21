@@ -274,6 +274,23 @@ front matter by hand.
 
 ---
 
+## Releasing
+
+A release is a git tag on `main`; there is no publish workflow. The tag is
+`v` plus the `version` in `pyproject.toml`. In one pull request, bump that
+version and move the `[Unreleased]` entries in `CHANGELOG.md` under a dated
+heading for it; once `ci.yml` has passed on the merge commit, tag it:
+
+```bash
+git fetch origin && git tag -a v0.2.0 origin/main -m "gps-journey 0.2.0"
+git push origin v0.2.0
+```
+
+Consumers pin the tag (`gps-journey @ git+https://github.com/Back-Road-Creative/gps-journey@v0.2.0`)
+rather than a commit SHA.
+
+---
+
 ## License
 
 MIT License (see `pyproject.toml`).
