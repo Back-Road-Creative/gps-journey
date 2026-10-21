@@ -1,5 +1,6 @@
 """Configuration management using Pydantic settings."""
 
+import os
 from pathlib import Path
 from typing import Literal
 
@@ -186,3 +187,28 @@ def __getattr__(name: str) -> Config:
         globals()["config"] = value
         return value
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+class InputsDirError(ValueError):
+    """``GPS_INPUTS_DIR`` is set but does not point at an existing directory."""
+
+
+def inputs_dir() -> Path:
+    """Where private inputs (``config.yaml``, ``location_overrides.yaml``) live.
+
+    ``GPS_INPUTS_DIR`` wins. A blank value counts as unset. Without it the
+    directory is ``inputs`` under the current working directory, which this
+    function does not require to exist: a caller that wants an optional file
+    checks for it. When ``GPS_INPUTS_DIR`` is set it must name an existing
+    directory, otherwise ``InputsDirError`` says which variable and path are
+    wrong, so a typo cannot silently fall back to no inputs.
+    """
+    override = os.environ.get("GPS_INPUTS_DIR", "").strip()
+    if not override:
+        return Path.cwd() / "inputs"
+    path = Path(override)
+    if not path.exists():
+        raise InputsDirError(f"GPS_INPUTS_DIR={override} does not exist")
+    if not path.is_dir():
+        raise InputsDirError(f"GPS_INPUTS_DIR={override} is not a directory")
+    return path
