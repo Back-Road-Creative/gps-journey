@@ -6,6 +6,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-21
+
 ### Added
 - `gps_journey.config.inputs_dir()` finds the directory for private inputs: `GPS_INPUTS_DIR` if set (it must be an existing directory, else `InputsDirError`), otherwise `inputs` under the current directory.
 - GPX parsing, Nominatim geocoding with an on-disk cache, a journey data model, Hugo markdown generation and a command-line interface (`process`, `validate`, `export-metadata`, `version`).
