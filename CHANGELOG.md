@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
+- `gps_journey.config.inputs_dir()` finds the directory for private inputs: `GPS_INPUTS_DIR` if set (it must be an existing directory, else `InputsDirError`), otherwise `inputs` under the current directory.
 - GPX parsing, Nominatim geocoding with an on-disk cache, a journey data model, Hugo markdown generation and a command-line interface (`process`, `validate`, `export-metadata`, `version`).
 - Photo matching against a GPS track, with explicit uncertainty: `MatchedPhoto.distance_meters` is `None` for a time-only match, `location_status` is `"inferred"` or `"measured"`, and `PublicationPolicy(max_track_gap_seconds=...)` diverts sparse-track matches to `MatchReport.refused`.
 - Naive photo timestamps need an explicit `PhotoMatcher(camera_clock=...)`; otherwise they are reported in `MatchReport.needs_clock_decision` instead of being assumed UTC.

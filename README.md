@@ -160,6 +160,16 @@ wins over an exported `HUGO_` variable. To override a `.env`, export
 `HUGO__CONTENT_PATH` or use the CLI options. `process --output` writes
 `<name>.md` into the current directory; copy it into your site afterwards.
 
+### Private inputs
+
+Files that belong to you rather than to the package (a `config.yaml` for
+`Config.from_yaml`, location overrides) live in one directory, found with
+`gps_journey.config.inputs_dir()`. Set `GPS_INPUTS_DIR` to point at it; without
+it the directory is `inputs` under the current working directory. When
+`GPS_INPUTS_DIR` is set and is not an existing directory, `inputs_dir()` raises
+`InputsDirError` naming the variable and path. Load a config with
+`Config.from_yaml(inputs_dir() / "config.yaml")`.
+
 ---
 
 ## Development
